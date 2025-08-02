@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Ozan & Emine Private Diary">
+    <title>Ozan & Emine Diary - Günlük</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="diary.css">
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts">
+        <div class="floating-heart">❤️</div>
+        <div class="floating-heart">💕</div>
+        <div class="floating-heart">💖</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="nav-brand">💕 Ozan & Emine</a>
+            <div class="nav-center">
+                <div class="love-counter" id="loveCounter">
+                    💕 Birlikte 0 gün
+                </div>
+            </div>
+            <div class="nav-links">
+                <button class="calendar-btn" onclick="showCalendarModal()">📅 Takvim</button>
+                <button class="logout-btn" onclick="logout()">🚪 Çıkış</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="header-title">Günlük Defterimiz 📖</h1>
+            <p class="header-subtitle">
+                Birlikte yaşadığımız özel anları, düşüncelerimizi ve hatıralarımızı buraya yazıyoruz
+            </p>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Günlük ara..." id="searchInput">
+            </div>
+            <div class="action-buttons">
+                <button class="new-entry-btn" onclick="showNewEntryForm()">+ Yeni Günlük</button>
+            </div>
+        </div>
+
+        <!-- Modal for New Entry -->
+        <div id="newEntryModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">✨ Yeni Günlük</h2>
+                    <button class="modal-close" onclick="hideNewEntryForm()">×</button>
+                </div>
+                <form id="diaryForm" onsubmit="saveDiary(event)">
+                    <input type="text" id="entryTitle" placeholder="Başlık..." required>
+                    <textarea id="entryContent" placeholder="Bugün neler yaşadık..." required></textarea>
+                    <div class="form-row">
+                        <select id="entryAuthor" required>
+                            <option value="">Kim yazıyor?</option>
+                            <option value="ozan">👨 Ozan</option>
+                            <option value="emine">👩 Emine</option>
+                        </select>
+                        <select id="entryMood" required>
+                            <option value="">Ruh hali seç</option>
+                            <option value="happy">😊 Mutlu</option>
+                            <option value="love">❤️ Aşk</option>
+                            <option value="sad">😢 Üzgün</option>
+                            <option value="excited">🎉 Heyecanlı</option>
+                        </select>
+                    </div>
+                    <input type="text" id="entryTags" placeholder="Etiketler (virgülle ayır)">
+                    <div class="form-buttons">
+                        <button type="button" onclick="hideNewEntryForm()">İptal</button>
+                        <button type="submit">💕 Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterEntries('all')">Tümü</button>
+            <button class="filter-btn" onclick="filterEntries('happy')">😊 Mutlu</button>
+            <button class="filter-btn" onclick="filterEntries('love')">❤️ Aşk</button>
+            <button class="filter-btn" onclick="filterEntries('sad')">😢 Üzgün</button>
+            <button class="filter-btn" onclick="filterEntries('excited')">🎉 Heyecanlı</button>
+            <button class="filter-btn" onclick="filterEntries('favorites')">⭐ Favoriler</button>
+            <button class="filter-btn" onclick="filterEntries('special-days')">🎊 Özel Günler</button>
+        </div>
+
+        <!-- Diary Entries Grid -->
+        <div class="entries-grid" id="entriesGrid">
+            <!-- Entries will be loaded here by JavaScript -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be generated by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Calendar Modal -->
+    <div id="calendarModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📅 Takvimimiz</h2>
+                <button class="modal-close" onclick="hideCalendarModal()">×</button>
+            </div>
+            
+            <div class="calendar-info">
+                <p>Özel gün eklemek için bir tarihe tıklayın</p>
+            </div>
+
+            <div class="calendar-controls">
+                <button onclick="previousMonth()">‹</button>
+                <h3 id="currentMonth">Ocak 2024</h3>
+                <button onclick="nextMonth()">›</button>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Calendar will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Special Day Modal -->
+    <div id="specialDayModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🎉 Özel Gün Ekle</h2>
+                <button class="modal-close" onclick="hideSpecialDayForm()">×</button>
+            </div>
+            <form id="specialDayForm" onsubmit="saveSpecialDay(event)">
+                <input type="text" id="specialDayTitle" placeholder="Özel gün adı (ör: Yıldönümümüz)" required>
+                <input type="date" id="specialDayDate" required>
+                <select id="specialDayType" required>
+                    <option value="">Kategori seç</option>
+                    <option value="anniversary">💕 Yıldönümü</option>
+                    <option value="birthday">🎂 Doğum Günü</option>
+                    <option value="holiday">🎄 Tatil</option>
+                    <option value="special">✨ Özel Anı</option>
+                    <option value="celebration">🎉 Kutlama</option>
+                </select>
+                <textarea id="specialDayNote" placeholder="Bu gün hakkında not..."></textarea>
+                <div class="form-buttons">
+                    <button type="button" onclick="hideSpecialDayForm()">İptal</button>
+                    <button type="submit">💕 Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Entry Detail Modal -->
+    <div id="entryDetailModal" class="modal-overlay detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📖 Günlük Detayı</h2>
+                <button class="modal-close" onclick="hideEntryDetail()">×</button>
+            </div>
+            
+            <div id="entryDetailContent">
+                <!-- Detail content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="diary-script.js"></script>
+</body>
+</html>
